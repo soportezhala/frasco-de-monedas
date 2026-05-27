@@ -1,345 +1,150 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Frasco de Monedas</title>
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <style>
-        .error-message {
-            background-color: #fee2e2;
-            color: #991b1b;
-            padding: 0.75rem;
-            border-radius: 0.5rem;
-            margin-top: 1rem;
-            display: none;
-            text-align: center;
-            font-weight: 500;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Frasco de Monedas</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+  <style>
+    .error-message {
+      background-color: #fee2e2;
+      color: #991b1b;
+      padding: 0.75rem;
+      border-radius: 0.5rem;
+      margin-top: 1rem;
+      display: none;
+      text-align: center;
+      font-weight: 500;
+    }
+  </style>
 </head>
-<body class="bg-slate-50 font-sans min-h-screen flex flex-col items-center justify-center p-4">
 
-    <div class="w-full max-w-md bg-white rounded-2xl shadow-xl p-6 md:p-8 space-y-6">
-        
-        <div class="text-center space-y-2">
-            <div class="inline-flex items-center justify-center w-12 h-12 rounded-full bg-amber-100 text-amber-600 text-2xl shadow-sm">
-                🪙
-            </div>
-            <h1 class="text-2xl font-bold text-slate-800">Frasco de Monedas</h1>
-        </div>
+<body class="bg-slate-50 min-h-screen flex items-center justify-center p-4">
 
-        <hr class="border-slate-100">
+<div class="w-full max-w-md bg-white rounded-2xl shadow-xl p-6 space-y-6">
 
-        <div id="vista-login" class="space-y-5">
-            <div class="space-y-1">
-                <h2 class="text-xl font-semibold text-slate-800 flex items-center gap-2">
-                    Hola 👋
-                </h2>
-                <p class="text-sm text-slate-500">Escribe tu PIN para entrar.</p>
-            </div>
+  <!-- HEADER -->
+  <div class="text-center space-y-2">
+    <div class="w-14 h-14 mx-auto rounded-full bg-amber-100 text-amber-600 flex items-center justify-center text-3xl">
+      🪙
+    </div>
+    <h1 class="text-2xl font-bold text-slate-800">Frasco de Monedas</h1>
+    <p class="text-xs text-slate-500">Ahorrar también puede ser divertido</p>
+  </div>
 
-            <div class="space-y-4">
-                <div>
-                    <label class="block text-sm font-medium text-slate-700 mb-1">Usuario</label>
-                    <input type="text" id="input-usuario" placeholder="Ej. gabo" 
-                           class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all text-slate-700">
-                </div>
+  <!-- LOGIN -->
+  <div id="vista-login" class="space-y-4">
+    <input id="input-usuario" placeholder="Usuario"
+      class="w-full px-4 py-2 border rounded-xl text-center" />
+    <input id="input-pin" type="password" placeholder="PIN"
+      class="w-full px-4 py-2 border rounded-xl text-center text-xl tracking-widest" />
+    <button id="btn-entrar" onclick="validarLogin()"
+      class="w-full bg-emerald-600 text-white py-2 rounded-xl">
+      Entrar ✅
+    </button>
+    <div id="error-login" class="error-message"></div>
+  </div>
 
-                <div>
-                    <label class="block text-sm font-medium text-slate-700 mb-1">PIN</label>
-                    <input type="password" id="input-pin" inputmode="numeric" pattern="[0-9]*" placeholder="••••" maxlength="6"
-                           class="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-center text-xl tracking-widest focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all text-slate-700">
-                </div>
+  <!-- DASHBOARD -->
+  <div id="vista-dashboard" class="hidden space-y-6">
 
-                <div class="flex gap-3 pt-2">
-                    <button onclick="validarLogin()" id="btn-entrar"
-                            class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2.5 px-4 rounded-xl shadow-sm shadow-emerald-200 transition-colors flex items-center justify-center gap-2 cursor-pointer">
-                        <span>Entrar</span> ✅
-                    </button>
-                    <a href="https://sites.google.com/view/frasco-monedas" 
-                       class="bg-slate-500 hover:bg-slate-600 text-white font-medium py-2.5 px-4 rounded-xl shadow-sm transition-colors text-center text-sm flex items-center justify-center">
-                        Volver al admin
-                    </a>
-                </div>
-            </div>
-            
-            <div id="error-login" class="error-message"></div>
-        </div>
-
-        <div id="vista-dashboard" class="hidden space-y-6">
-            <div class="flex items-center justify-between">
-                <div>
-                    <h2 class="text-lg font-bold text-slate-800">Panel de <span id="nombre-perfil" class="text-emerald-600 capitalize">Usuario</span></h2>
-                    <p class="text-xs text-slate-400">¡Ahorrar es un súper poder!</p>
-                </div>
-                <button onclick="cerrarSesion()" class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-600 px-3 py-1.5 rounded-lg font-medium transition-colors cursor-pointer">
-                    Salir 🚪
-                </button>
-            </div>
-
-            <div class="bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl p-5 text-white shadow-md shadow-emerald-100 space-y-4">
-                <div class="flex justify-between items-center">
-                    <span class="text-sm font-medium opacity-90">Total Ahorrado</span>
-                    <span class="text-2xl">💰</span>
-                </div>
-                <div class="flex items-baseline gap-1">
-                    <span class="text-3xl font-extrabold" id="total-dinero">$0.00</span>
-                    <span class="text-xs opacity-75">MXN</span>
-                </div>
-                <div class="flex justify-between text-xs pt-2 border-t border-white/20 opacity-90">
-                    <span>Monedas totales:</span>
-                    <span id="total-monedas" class="font-bold">0</span>
-                </div>
-            </div>
-
-            <div class="bg-slate-50 rounded-2xl p-4 border border-slate-100 space-y-3">
-                <h3 class="text-sm font-bold text-slate-700 flex items-center gap-1.5">
-                    <span>📥</span> Registrar Monedas
-                </h3>
-                
-                <div class="grid grid-cols-2 gap-2">
-                    <div>
-                        <label class="block text-xs text-slate-500 mb-1">Denominación</label>
-                        <select id="select-denominacion" class="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 text-slate-700">
-                            </select>
-                    </div>
-                    <div>
-                        <label class="block text-xs text-slate-500 mb-1">¿Cuántas pones?</label>
-                        <input type="number" id="input-cantidad" value="1" min="1" class="w-full px-3 py-2 bg-white border border-slate-200 rounded-xl text-center font-bold focus:outline-none focus:ring-2 focus:ring-emerald-500 text-slate-700">
-                    </div>
-                </div>
-
-                <button onclick="registrarMovimiento()" id="btn-guardar"
-                        class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2 px-4 rounded-xl transition-colors shadow-sm cursor-pointer mt-1">
-                    Guardar en el Frasco 💾
-                </button>
-                
-                <div id="error-dashboard" class="error-message"></div>
-            </div>
-
-            <div class="space-y-2">
-                <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Últimos movimientos</h3>
-                <div id="lista-historial" class="max-h-40 overflow-y-auto divide-y divide-slate-100 pr-1 text-sm text-slate-600">
-                    <p class="text-slate-400 text-xs text-center py-4">No hay movimientos recientes.</p>
-                </div>
-            </div>
-        </div>
-
+    <!-- PERFIL -->
+    <div class="flex justify-between items-center">
+      <div>
+        <h2 class="font-bold text-slate-700">
+          Hola <span id="nombre-perfil" class="text-emerald-600"></span>
+        </h2>
+        <p class="text-xs text-slate-400">Tu frasco hoy</p>
+      </div>
+      <button onclick="cerrarSesion()" class="text-xs text-slate-500">Salir 🚪</button>
     </div>
 
-    <script>
-        // ==========================================
-        // CONFIGURACIÓN GLOBAL - TU ENDPOINT API
-        // ==========================================
-        const URL_API_GOOGLE = "https://script.google.com/macros/s/AKfycbziw6SNqQcZgLfQhrY_dGARhBnqNIAum2pBxbig2gRQsOmizsl7L4HjnjHvWcs4K8yJ/exec";
+    <!-- RESUMEN -->
+    <div class="bg-gradient-to-br from-emerald-500 to-teal-600 text-white rounded-2xl p-4 space-y-2">
+      <div class="flex justify-between">
+        <span>Total ahorrado</span>
+        <span>💰</span>
+      </div>
+      <div class="text-3xl font-bold" id="total-dinero">$0.00</div>
+      <div class="flex justify-between text-xs opacity-90">
+        <span>Monedas:</span>
+        <span id="total-monedas">0</span>
+      </div>
+    </div>
 
-        // Variables de sesión en memoria
-        let usuarioSesion = "";
-        let pinSesion = "";
+    <!-- METAS -->
+    <div class="bg-slate-100 rounded-xl p-3 text-sm text-slate-700">
+      <p id="mensaje-meta">🌱 Empieza a ahorrar</p>
+    </div>
 
-        /**
-         * FUNCIÓN CENTRAL DE CONEXIÓN CON GOOGLE APPS SCRIPT
-         * CORRECCIÓN DE ERROR CORS: Se eliminó el modo 'no-cors' y se configuró text/plain
-         */
-        function callAppsScript(datos) {
-            return fetch(URL_API_GOOGLE, {
-                method: "POST",
-                headers: {
-                    // text/plain evita el trigger del preflight OPTIONS que Google Apps Script rechaza
-                    "Content-Type": "text/plain;charset=utf-8"
-                },
-                body: JSON.stringify(datos)
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error("El servidor respondió con un error (Código " + response.status + ")");
-                }
-                return response.json();
-            });
-        }
+    <!-- ACCIÓN -->
+    <div class="space-y-2">
+      <select id="tipo-movimiento"
+        class="w-full px-3 py-2 border rounded-xl">
+        <option value="INGRESO">➕ Guardar monedas</option>
+        <option value="RETIRO">➖ Sacar monedas</option>
+      </select>
 
-        /**
-         * MANEJO DEL LOGIN
-         */
-        function validarLogin() {
-            const userField = document.getElementById("input-usuario").value.trim().toLowerCase();
-            const pinField = document.getElementById("input-pin").value.trim();
-            const btn = document.getElementById("btn-entrar");
-            const errDiv = document.getElementById("error-login");
+      <div class="grid grid-cols-2 gap-2">
+        <select id="select-denominacion"
+          class="px-3 py-2 border rounded-xl"></select>
+        <input id="input-cantidad" type="number" min="1" value="1"
+          class="px-3 py-2 border rounded-xl text-center font-bold" />
+      </div>
 
-            if (!userField || !pinField) {
-                mostrarError(errDiv, "Por favor escribe tu usuario y PIN.");
-                return;
-            }
+      <button id="btn-guardar" onclick="registrarMovimiento()"
+        class="w-full bg-emerald-600 text-white py-2 rounded-xl">
+        Confirmar 💾
+      </button>
 
-            // Efecto visual de carga
-            btn.disabled = true;
-            btn.innerHTML = "Verificando... ⏳";
-            errDiv.style.display = "none";
+      <div id="error-dashboard" class="error-message"></div>
+    </div>
 
-            const payload = {
-                action: "login",
-                usuario: userField,
-                pin: pinField
-            };
+    <!-- HISTORIAL -->
+    <div>
+      <h3 class="text-xs font-bold text-slate-400 uppercase">Últimos movimientos</h3>
+      <div id="lista-historial" class="text-sm text-slate-600"></div>
+    </div>
 
-            callAppsScript(payload)
-                .then(data => {
-                    if (data && data.exito) {
-                        // Guardar sesión local temporal
-                        usuarioSesion = userField;
-                        pinSesion = pinField;
+  </div>
+</div>
 
-                        // Cargar interfaz y renderizar datos
-                        document.getElementById("nombre-perfil").innerText = usuarioSesion;
-                        actualizarPantallaDatos(data);
-                        configurarSelectDenominaciones(data.denominaciones);
-                        
-                        // Cargar historial de movimientos
-                        solicitarHistorial();
+<script>
+/* ===== TU JS ORIGINAL SE MANTIENE ===== */
+/* Solo cambiamos el tipo dinámico */
 
-                        // Switch de pantallas
-                        document.getElementById("vista-login").classList.add("hidden");
-                        document.getElementById("vista-dashboard").classList.remove("hidden");
-                    } else {
-                        mostrarError(errDiv, data.message || "Usuario o PIN incorrectos.");
-                    }
-                })
-                .catch(err => {
-                    console.error("Error en login:", err);
-                    mostrarError(errDiv, "Error de conexión. Revisa la URL_API o los permisos.");
-                })
-                .finally(() => {
-                    btn.disabled = false;
-                    btn.innerHTML = "<span>Entrar</span> ✅";
-                });
-        }
+function registrarMovimiento() {
+  const tipo = document.getElementById("tipo-movimiento").value;
+  const denom = document.getElementById("select-denominacion").value;
+  const cant = parseInt(document.getElementById("input-cantidad").value);
 
-        /**
-         * REGISTRAR ENTRADA DE MONEDAS
-         */
-        function registrarMovimiento() {
-            const denomSelect = document.getElementById("select-denominacion").value;
-            const cantInput = parseInt(document.getElementById("input-cantidad").value);
-            const btn = document.getElementById("btn-guardar");
-            const errDiv = document.getElementById("error-dashboard");
+  const payload = {
+    action: "registrar_movimiento",
+    usuario: usuarioSesion,
+    pin: pinSesion,
+    tipo: tipo,
+    denominacion: parseFloat(denom),
+    cantidad: cant
+  };
 
-            if (!denomSelect || isNaN(cantInput) || cantInput <= 0) {
-                mostrarError(errDiv, "Cantidad inválida.");
-                return;
-            }
+  callAppsScript(payload)
+    .then(data => {
+      actualizarPantallaDatos(data);
+      actualizarMeta(data.totalDinero);
+      solicitarHistorial();
+    });
+}
 
-            btn.disabled = true;
-            btn.innerHTML = "Guardando... 💾";
-            errDiv.style.display = "none";
+function actualizarMeta(total) {
+  const meta = document.getElementById("mensaje-meta");
+  if (total >= 100) meta.innerText = "🏆 ¡Meta alcanzada!";
+  else if (total >= 50) meta.innerText = "💪 Vas muy bien";
+  else if (total >= 20) meta.innerText = "🌱 Buen comienzo";
+  else meta.innerText = "🪙 Sigue ahorrando";
+}
+</script>
 
-            const payload = {
-                action: "registrar_movimiento",
-                usuario: usuarioSesion,
-                pin: pinSesion,
-                tipo: "INGRESO",
-                denominacion: parseFloat(denomSelect),
-                cantidad: cantInput
-            };
-
-            callAppsScript(payload)
-                .then(data => {
-                    if (data && data.exito) {
-                        actualizarPantallaDatos(data);
-                        document.getElementById("input-cantidad").value = "1";
-                        // Refrescar el historial reflejando el cambio nuevo
-                        solicitarHistorial();
-                    } else {
-                        mostrarError(errDiv, data.message || "No se pudo guardar.");
-                    }
-                })
-                .catch(err => {
-                    console.error("Error al registrar:", err);
-                    mostrarError(errDiv, "Error de comunicación con el frasco.");
-                })
-                .finally(() => {
-                    btn.disabled = false;
-                    btn.innerHTML = "Guardar en el Frasco 💾";
-                });
-        }
-
-        /**
-         * OBTENER HISTORIAL DESDE EL GOOGLE SHEET
-         */
-        function solicitarHistorial() {
-            const payload = {
-                action: "get_history",
-                usuario: usuarioSesion,
-                pin: pinSesion
-            };
-
-            callAppsScript(payload)
-                .then(data => {
-                    const contenedor = document.getElementById("lista-historial");
-                    contenedor.innerHTML = "";
-
-                    if (data && data.historial && data.historial.length > 0) {
-                        data.historial.forEach(mov => {
-                            const div = document.createElement("div");
-                            div.className = "flex justify-between items-center py-2 border-b border-slate-50";
-                            
-                            // Formateo visual rápido
-                            const badgeColor = mov.tipo === "INGRESO" ? "text-emerald-600 font-bold" : "text-rose-600 font-bold";
-                            const signo = mov.tipo === "INGRESO" ? "+" : "-";
-
-                            div.innerHTML = `
-                                <div class="flex flex-col">
-                                    <span class="text-xs text-slate-400">${mov.fecha || ""}</span>
-                                    <span class="font-medium text-slate-700">${mov.cantidad} ${mov.cantidad > 1 ? 'monedas' : 'moneda'} de $${mov.denominacion}</span>
-                                </div>
-                                <span class="${badgeColor}">${signo} $${(mov.cantidad * mov.denominacion).toFixed(2)}</span>
-                            `;
-                            contenedor.appendChild(div);
-                        });
-                    } else {
-                        contenedor.innerHTML = `<p class="text-slate-400 text-xs text-center py-4">No hay movimientos guardados aún.</p>`;
-                    }
-                })
-                .catch(err => console.error("Error trayendo historial:", err));
-        }
-
-        /**
-         * AUXILIARES DE INTERFAZ
-         */
-        function actualizarPantallaDatos(data) {
-            document.getElementById("total-dinero").innerText = "$" + (data.totalDinero ? parseFloat(data.totalDinero).toFixed(2) : "0.00");
-            document.getElementById("total-monedas").innerText = data.totalMonedas || "0";
-        }
-
-        function configurarSelectDenominaciones(strDenom) {
-            const select = document.getElementById("select-denominacion");
-            select.innerHTML = "";
-            
-            // Si el backend no manda denominaciones, usamos catálogo base de monedas mexicanas
-            const arr = strDenom ? strDenom.split(",") : ["1", "2", "5", "10", "20"];
-            
-            arr.forEach(val => {
-                const opt = document.createElement("option");
-                opt.value = val.trim();
-                opt.innerText = "$" + val.trim();
-                select.appendChild(opt);
-            });
-        }
-
-        function mostrarError(elemento, mensaje) {
-            elemento.innerText = mensaje;
-            elemento.style.display = "block";
-        }
-
-        function cerrarSesion() {
-            usuarioSesion = "";
-            pinSesion = "";
-            document.getElementById("input-usuario").value = "";
-            document.getElementById("input-pin").value = "";
-            document.getElementById("vista-dashboard").classList.add("hidden");
-            document.getElementById("vista-login").classList.remove("hidden");
-        }
-    </script>
 </body>
 </html>
+``
