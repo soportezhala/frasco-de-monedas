@@ -244,13 +244,18 @@
     let ultimoLogro = 0;
 
     // Metas (puedes cambiar montos)
-    const METAS = [
-      { monto: 20,  nombre: "Nivel 1", msg: "🌱 ¡Buen comienzo! Llegaste a $20" },
-      { monto: 50,  nombre: "Nivel 2", msg: "💪 ¡Vas muy bien! Llegaste a $50" },
-      { monto: 100, nombre: "Nivel 3", msg: "🏆 ¡Meta alcanzada! Llegaste a $100" },
-      { monto: 200, nombre: "Nivel 4", msg: "🚀 ¡Increíble! Llegaste a $200" }
-    ];
-    const META_MAX = METAS[METAS.length - 1].monto;
+ const METAS = [
+  { monto: 20,   nombre: "Nivel 1", msg: "🌱 ¡Buen comienzo! Llegaste a $20" },
+  { monto: 50,   nombre: "Nivel 2", msg: "💪 ¡Vas muy bien! Llegaste a $50" },
+  { monto: 100,  nombre: "Nivel 3", msg: "🏆 ¡Meta alcanzada! Llegaste a $100" },
+  { monto: 200,  nombre: "Nivel 4", msg: "🚀 ¡Increíble! Llegaste a $200" },
+  { monto: 500,  nombre: "Nivel 5", msg: "🔥 ¡Constancia total! $500 ahorrados" },
+  { monto: 1000, nombre: "Nivel 6", msg: "💎 ¡Gran ahorrador! $1,000 alcanzados" },
+  { monto: 2000, nombre: "Nivel 7", msg: "🏰 ¡Maestro del ahorro! $2,000" }
+];
+
+const META_MAX = METAS[METAS.length - 1].monto;
+
 
     // ========= API caller =========
     function callAppsScript(datos) {
