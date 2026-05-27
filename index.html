@@ -233,7 +233,7 @@
     // ==========================================
     // CONFIGURACIÓN GLOBAL - TU ENDPOINT API
     // ==========================================
-    const URL_API_GOOGLE = "https://script.google.com/macros/s/AKfycbziw6SNqQcZgLfQhrY_dGARhBnqNIAum2pBxbig2gRQsOmizsl7L4HjnjHvWcs4K8yJ/exec";
+    const URL_API_GOOGLE = "https://script.google.com/macros/s/AKfycbwltdZeLhKLm4H5GxNEF0vKteCgEK9Tn4i4HdfhYaE69EIC83Mz8WdpxaVfhWbBHlXX/exec";
 
     // Variables de sesión
     let usuarioSesion = "";
@@ -462,44 +462,63 @@
       txt.textContent = box.classList.contains("hidden") ? "Mostrar" : "Ocultar";
     }
 
-    // ========= UI rendering =========
-    function actualizarPantallaDatos(data) {
-      const totalDinero = data.totalDinero ? parseFloat(data.totalDinero) : 0;
-      const totalMonedas = data.totalMonedas ? parseInt(data.totalMonedas) : 0;
+    // ========= UI rendering (versión segura, sin NaN) =========
+function actualizarPantallaDatos(data) {
+  // Conversión segura
+  const totalDineroNum = Number(data.totalDinero);
+  const totalMonedasNum = Number(data.totalMonedas);
 
-      document.getElementById("total-dinero").textContent = "$" + totalDinero.toFixed(2);
-      document.getElementById("total-monedas").textContent = String(totalMonedas);
-      document.getElementById("monedas-disponibles").textContent = String(totalMonedas);
+  const totalDinero = isNaN(totalDineroNum) ? 0 : totalDineroNum;
+  const totalMonedas = isNaN(totalMonedasNum) ? 0 : totalMonedasNum;
 
-      // Metas / logros
-      const barra = document.getElementById("barra-meta");
-      const texto = document.getElementById("texto-meta");
-      const metaVal = document.getElementById("meta-valor");
-      const badge = document.getElementById("badge-logro");
-      const logroBox = document.getElementById("logro-msg");
+  // --- Resumen principal ---
+  document.getElementById("total-dinero").textContent =
+    "$" + totalDinero.toFixed(2);
 
-      const pct = Math.min((totalDinero / META_MAX) * 100, 100);
-      barra.style.width = pct.toFixed(0) + "%";
-      metaVal.textContent = "$" + totalDinero.toFixed(2) + " / $" + META_MAX;
+  document.getElementById("total-monedas").textContent =
+    String(totalMonedas);
 
-      // Determinar nivel actual
-      let nivel = 0;
-      let msg = "Ahorra para desbloquear un logro";
-      METAS.forEach((m, idx) => {
-        if (totalDinero >= m.monto) { nivel = idx + 1; msg = m.msg; }
-      });
-      badge.textContent = "Nivel " + nivel;
-      texto.textContent = msg;
+  document.getElementById("monedas-disponibles").textContent =
+    String(totalMonedas);
 
-      // Mostrar confetti message solo al subir de logro
-      if (nivel > ultimoLogro) {
-        ultimoLogro = nivel;
-        logroBox.textContent = "🎉 " + msg;
-        logroBox.classList.remove("hidden");
-        logroBox.style.display = "block";
-        setTimeout(() => { logroBox.classList.add("hidden"); }, 3000);
-      }
+  // --- Metas / logros ---
+  const barra = document.getElementById("barra-meta");
+  const texto = document.getElementById("texto-meta");
+  const metaVal = document.getElementById("meta-valor");
+  const badge = document.getElementById("badge-logro");
+  const logroBox = document.getElementById("logro-msg");
+
+  const pct = Math.min((totalDinero / META_MAX) * 100, 100);
+  barra.style.width = pct.toFixed(0) + "%";
+  metaVal.textContent =
+    "$" + totalDinero.toFixed(2) + " / $" + META_MAX;
+
+  // Determinar nivel actual
+  let nivel = 0;
+  let msg = "Ahorra para desbloquear un logro";
+
+  METAS.forEach((m, idx) => {
+    if (totalDinero >= m.monto) {
+      nivel = idx + 1;
+      msg = m.msg;
     }
+  });
+
+  badge.textContent = "Nivel " + nivel;
+  texto.textContent = msg;
+
+  // Mostrar mensaje solo cuando se sube de nivel
+  if (nivel > ultimoLogro) {
+    ultimoLogro = nivel;
+    logroBox.textContent = "🎉 " + msg;
+    logroBox.classList.remove("hidden");
+    logroBox.style.display = "block";
+
+    setTimeout(() => {
+      logroBox.classList.add("hidden");
+    }, 3000);
+  }
+}
 
     function configurarSelectDenominaciones(strDenom) {
       const select = document.getElementById("select-denominacion");
