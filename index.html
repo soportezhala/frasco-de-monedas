@@ -241,7 +241,8 @@
 
     // Estado local de UI
     let tipoSeleccionado = "INGRESO";
-    let ultimoLogro = 0;
+    // Estado de logros POR USUARIO
+let ultimoLogroPorUsuario = {};
 
     // Metas (puedes cambiar montos)
  const METAS = [
@@ -359,6 +360,10 @@ const META_MAX = METAS[METAS.length - 1].monto;
           } else {
             mostrarError(errDiv, data.message || "Usuario o PIN incorrectos.");
           }
+          // Inicializar logro del usuario si no existe
+      if (typeof ultimoLogroPorUsuario[usuarioSesion] === "undefined") {
+        ultimoLogroPorUsuario[usuarioSesion] = 0;
+      }
         })
         .catch(err => {
           console.error("Error en login:", err);
@@ -513,16 +518,23 @@ function actualizarPantallaDatos(data) {
   texto.textContent = msg;
 
   // Mostrar mensaje solo cuando se sube de nivel
-  if (nivel > ultimoLogro) {
-    ultimoLogro = nivel;
-    logroBox.textContent = "🎉 " + msg;
-    logroBox.classList.remove("hidden");
-    logroBox.style.display = "block";
+const usuario = usuarioSesion;
 
-    setTimeout(() => {
-      logroBox.classList.add("hidden");
-    }, 3000);
-  }
+// Obtener último logro SOLO de este usuario
+const ultimo = ultimoLogroPorUsuario[usuario] || 0;
+
+// Mostrar confeti solo si ESTE usuario subió de nivel
+if (nivel > ultimo) {
+  ultimoLogroPorUsuario[usuario] = nivel;
+
+  logroBox.textContent = "🎉 " + msg;
+  logroBox.classList.remove("hidden");
+  logroBox.style.display = "block";
+
+  setTimeout(() => {
+    logroBox.classList.add("hidden");
+  }, 3000);
+}
 }
 
     function configurarSelectDenominaciones(strDenom) {
